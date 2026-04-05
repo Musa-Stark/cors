@@ -1,0 +1,324 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>API Tester</title>
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #0a0a0f;
+        font-family: "Courier New", monospace;
+        color: #e2e8f0;
+        padding: 24px;
+      }
+
+      .card {
+        width: 100%;
+        max-width: 560px;
+        background: #111118;
+        border: 1px solid #1e1e2e;
+        border-radius: 12px;
+        overflow: hidden;
+      }
+
+      .card-header {
+        padding: 20px 24px;
+        border-bottom: 1px solid #1e1e2e;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+      }
+      .dot.red {
+        background: #ff5f57;
+      }
+      .dot.yellow {
+        background: #febc2e;
+      }
+      .dot.green {
+        background: #28c840;
+      }
+
+      .card-title {
+        margin-left: 6px;
+        font-size: 13px;
+        color: #64748b;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .card-body {
+        padding: 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      label {
+        font-size: 11px;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: #64748b;
+        display: block;
+        margin-bottom: 6px;
+      }
+
+      input[type="text"],
+      select {
+        width: 100%;
+        padding: 10px 14px;
+        background: #0d0d14;
+        border: 1px solid #1e1e2e;
+        border-radius: 8px;
+        color: #e2e8f0;
+        font-family: "Courier New", monospace;
+        font-size: 13px;
+        outline: none;
+        transition: border-color 0.2s;
+      }
+
+      input[type="text"]:focus,
+      select:focus {
+        border-color: #3b82f6;
+      }
+
+      select option {
+        background: #111118;
+      }
+
+      .row {
+        display: flex;
+        gap: 12px;
+      }
+      .row > div {
+        flex: 1;
+      }
+
+      textarea {
+        width: 100%;
+        padding: 10px 14px;
+        background: #0d0d14;
+        border: 1px solid #1e1e2e;
+        border-radius: 8px;
+        color: #e2e8f0;
+        font-family: "Courier New", monospace;
+        font-size: 12px;
+        resize: vertical;
+        min-height: 80px;
+        outline: none;
+        transition: border-color 0.2s;
+      }
+      textarea:focus {
+        border-color: #3b82f6;
+      }
+
+      button {
+        width: 100%;
+        padding: 11px;
+        background: #3b82f6;
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        font-family: "Courier New", monospace;
+        font-size: 13px;
+        letter-spacing: 0.06em;
+        cursor: pointer;
+        transition:
+          background 0.2s,
+          opacity 0.2s;
+      }
+      button:hover {
+        background: #2563eb;
+      }
+      button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      .response-box {
+        background: #0d0d14;
+        border: 1px solid #1e1e2e;
+        border-radius: 8px;
+        padding: 14px;
+        font-size: 12px;
+        min-height: 80px;
+        white-space: pre-wrap;
+        word-break: break-all;
+        line-height: 1.6;
+        color: #94a3b8;
+        display: none;
+      }
+
+      .response-box.visible {
+        display: block;
+      }
+      .response-box.ok {
+        border-color: #22c55e;
+        color: #4ade80;
+      }
+      .response-box.err {
+        border-color: #ef4444;
+        color: #f87171;
+      }
+
+      .status-badge {
+        display: inline-block;
+        font-size: 10px;
+        padding: 2px 8px;
+        border-radius: 4px;
+        margin-bottom: 8px;
+        font-weight: bold;
+        letter-spacing: 0.08em;
+      }
+      .badge-ok {
+        background: #14532d;
+        color: #4ade80;
+      }
+      .badge-err {
+        background: #450a0a;
+        color: #f87171;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <div class="card-header">
+        <div class="dot red"></div>
+        <div class="dot yellow"></div>
+        <div class="dot green"></div>
+        <span class="card-title">API Tester</span>
+      </div>
+
+      <div class="card-body">
+        <!-- Server base URL -->
+        <div>
+          <label>Server Base URL</label>
+          <input
+            type="text"
+            id="baseUrl"
+            placeholder="http://localhost:3000  or  https://xxxx.ngrok-free.app"
+            value="http://localhost:3000"
+          />
+        </div>
+
+        <!-- Method + Endpoint -->
+        <div class="row">
+          <div style="flex: 0 0 110px">
+            <label>Method</label>
+            <select id="method">
+              <option value="GET">GET</option>
+              <option value="POST">POST</option>
+            </select>
+          </div>
+          <div>
+            <label>Endpoint</label>
+            <input
+              type="text"
+              id="endpoint"
+              value="/api/hello"
+              placeholder="/api/hello"
+            />
+          </div>
+        </div>
+
+        <!-- Body (POST only) -->
+        <div id="bodySection" style="display: none">
+          <label>Request Body (JSON)</label>
+          <textarea id="body" placeholder='{ "key": "value" }'>
+{ "message": "hello from client" }</textarea
+          >
+        </div>
+
+        <button id="sendBtn" onclick="sendRequest()">Send Request</button>
+
+        <!-- Response -->
+        <div id="responseBox" class="response-box"></div>
+      </div>
+    </div>
+
+    <script>
+      // Show/hide body textarea based on method
+      document.getElementById("method").addEventListener("change", function () {
+        document.getElementById("bodySection").style.display =
+          this.value === "POST" ? "block" : "none";
+      });
+
+      async function sendRequest() {
+        const baseUrl = document
+          .getElementById("baseUrl")
+          .value.trim()
+          .replace(/\/$/, "");
+        const method = document.getElementById("method").value;
+        const endpoint = document.getElementById("endpoint").value.trim();
+        const bodyText = document.getElementById("body").value.trim();
+        const btn = document.getElementById("sendBtn");
+        const box = document.getElementById("responseBox");
+
+        if (!baseUrl) return alert("Please enter a server URL.");
+
+        const url = baseUrl + endpoint;
+        btn.disabled = true;
+        btn.textContent = "Sending...";
+        box.className = "response-box";
+        box.textContent = "";
+
+        // "ngrok-skip-browser-warning" bypasses ngrok's interstitial HTML page
+        // that free tunnels inject — without it the response has no CORS headers
+        // and browsers block it. Safe to send to non-ngrok servers too.
+        const options = {
+          method,
+          headers: {
+            "Content-Type": "application/json",
+            "ngrok-skip-browser-warning": "true",
+          },
+          credentials: "include",
+        };
+
+        if (method === "POST" && bodyText) {
+          try {
+            JSON.parse(bodyText);
+          } catch {
+            // validate JSON
+            btn.disabled = false;
+            btn.textContent = "Send Request";
+            return alert("Invalid JSON body.");
+          }
+          options.body = bodyText;
+        }
+
+        try {
+          const res = await fetch(url, options);
+          const data = await res.json();
+
+          box.innerHTML =
+            `<span class="status-badge ${res.ok ? "badge-ok" : "badge-err"}">${res.status} ${res.statusText}</span>\n` +
+            JSON.stringify(data, null, 2);
+          box.className = `response-box visible ${res.ok ? "ok" : "err"}`;
+        } catch (err) {
+          box.innerHTML = `<span class="status-badge badge-err">ERROR</span>\n${err.message}`;
+          box.className = "response-box visible err";
+        }
+
+        btn.disabled = false;
+        btn.textContent = "Send Request";
+      }
+    </script>
+  </body>
+</html>
